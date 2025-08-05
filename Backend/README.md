@@ -1,0 +1,2 @@
+## title: Kryptonite Chatbot Backend emoji: ⚡ colorFrom: purple colorTo: indigo sdk: docker app_port: 7860
+This is the Python Flask backend for the Kryptonite AI Chatbot. It securely handles API calls to the Google Gemini API.

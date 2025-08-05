@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kryptonite Chatbot</title>
+    
+    <!-- Favicon Links -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22><path d=%22M13.5 3.5L6 12L13.5 20.5%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/><path d=%22M11 12H20%22 stroke=%22white%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/><path d=%22M18 7L20 5%22 stroke=%22%23A78BFA%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/><path d=%22M18 17L20 19%22 stroke=%22%23A78BFA%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Highlight.js for Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- Custom CSS File (Standard link for Vercel) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main container for the entire app -->
+    <div id="app-container">
+        <!-- Animated Gradient Background -->
+        <div class="gradient-bg"></div>
+
+        <!-- Chat History Panel -->
+        <aside id="history-panel" class="history-panel">
+            <div class="history-header">
+                <h2>Chat History</h2>
+                <button id="close-history-btn" class="header-button">&times;</button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+             <button id="clear-all-history-btn" class="clear-all-button">Clear All History</button>
+        </aside>
+
+        <!-- Chat UI Container -->
+        <div id="chat-ui-main" class="chat-ui-container">
+            <!-- Header -->
+            <header class="chat-header">
+                <div class="logo-container">
+                     <!-- History Toggle Button -->
+                    <button id="history-toggle-btn" class="header-button" title="Toggle History">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                          <path fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm0 5.25a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <!-- Custom SVG Logo for Kryptonite -->
+                    <svg class="logo" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.5 3.5L6 12L13.5 20.5" stroke="var(--logo-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11 12H20" stroke="var(--logo-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18 7L20 5" stroke="var(--accent-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18 17L20 19" stroke="var(--accent-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div>
+                        <h1 class="font-bold text-lg">Kryptonite</h1>
+                        <p class="text-xs text-header-secondary">Created by Aryan</p>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <!-- New Chat Button -->
+                    <button id="new-chat-btn" class="header-button" title="New Chat">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                          <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                        </svg>
+                    </button>
+                    <!-- Theme Toggle Switch -->
+                    <div class="theme-switcher">
+                        <input type="checkbox" id="theme-toggle" class="theme-toggle-checkbox">
+                        <label for="theme-toggle" class="theme-toggle-label">
+                            <span class="theme-toggle-inner"></span>
+                            <span class="theme-toggle-switch"></span>
+                        </label>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Chat Message Container -->
+            <main id="chat-container" class="chat-messages">
+                <!-- Messages will be dynamically added here -->
+            </main>
+
+            <!-- Input Area -->
+            <footer class="chat-input-area">
+                <div class="input-wrapper">
+                    <!-- Microphone Button -->
+                    <button id="mic-btn" class="mic-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                            <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+                            <path d="M6 15a1.5 1.5 0 00-1.5 1.5v.09a6.016 6.016 0 003.432 5.42 6.016 6.016 0 006.536-1.35.75.75 0 00-1.06-1.06 4.514 4.514 0 01-5.022-4.156v-.09A1.5 1.5 0 006 15z" />
+                        </svg>
+                    </button>
+                    <input type="text" id="user-input" placeholder="Spill the tea... or press the mic" class="chat-input">
+                    <button id="send-btn" class="send-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.949a.75.75 0 00.95.826L11.25 8.25l-6.507-1.226a.75.75 0 00-.95.826l1.414 4.949a.75.75 0 00.95.826l6.507-1.226a.75.75 0 00.826-.95l-1.414-4.949a.75.75 0 00-.826-.95L3.105 2.289z" />
+                        </svg>
+                    </button>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- JavaScript File (Standard link for Vercel) -->
+    <script src="script.js" defer></script>
+</body>
+</html>
