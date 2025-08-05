@@ -4,34 +4,43 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-# Load environment variables from a .env file (for local development)
 load_dotenv()
-
-# Initialize the Flask application
 app = Flask(__name__)
 
-# --- Configure CORS ---
-# Get the frontend URL from an environment variable for flexibility.
-# Fallback to a default for local testing if not set.
+# --- CORS Configuration ---
+# This is a more robust way to handle CORS.
+# It explicitly allows the necessary headers and methods.
 VERCEL_FRONTEND_URL = os.getenv("VERCEL_FRONTEND_URL", "http://127.0.0.1:5500")
+CORS(app, resources={r"/api/*": {
+    "origins": VERCEL_FRONTEND_URL,
+    "methods": ["POST", "OPTIONS"],
+    "allow_headers": ["Content-Type"]
+}})
+print(f"CORS configured for origin: {VERCEL_FRONTEND_URL}")
 
-# This is the crucial part for connecting the two services.
-# It tells the backend that it's okay to accept requests from your Vercel URL.
-CORS(app, resources={r"/api/*": {"origins": VERCEL_FRONTEND_URL}})
-
-# --- API Route for the Chatbot ---
-@app.route('/api/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
+    # The browser sends an OPTIONS request first to check CORS.
+    # We need to handle it and send back an OK response.
+    if request.method == 'OPTIONS':
+        return '', 204
+
+    # This is the main logic for the POST request.
     try:
+        print("Received a POST request to /api/chat")
         data = request.get_json()
+        if not data:
+            print("Request body is empty or not JSON.")
+            return jsonify({"error": {"message": "Request body is empty or not JSON."}}), 400
+        
+        print("Request body:", data) # Log the received data
+
         contents = data.get('contents')
         system_instruction = data.get('system_instruction')
-
-        # Get the secret API key from environment variables/secrets
         api_key = os.getenv('GEMINI_API_KEY')
 
         if not api_key:
-            return jsonify({"error": {"message": "GEMINI_API_KEY is not configured on the server."}}), 500
+            return jsonify({"error": {"message": "GEMINI_API_KEY is not configured."}}), 500
 
         gemini_api_url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key={api_key}'
 
@@ -59,12 +68,7 @@ def chat():
         print(f"An error occurred: {e}")
         return jsonify({"error": {"message": str(e)}}), 500
 
-# A simple root route to confirm the backend is running
 @app.route('/')
 def home():
     return "Kryptonite Backend is running! ⚡"
 
-# Note: The __main__ block is not needed for Hugging Face deployment,
-# but it's useful for local testing.
-if __name__ == '__main__':
-    app.run(port=7860) # Hugging Face Spaces typically use port 7860
