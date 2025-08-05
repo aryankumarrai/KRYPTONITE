@@ -181,7 +181,7 @@ function removeTypingIndicator() {
 // --- API & CHAT HANDLING ---
 async function generateResponse(prompt) {
     // ** IMPORTANT: Replace this with your public Hugging Face Space URL **
-    const apiUrl = 'https://YOUR-SPACE-NAME.hf.space/api/chat';
+    const apiUrl = 'https://kryptonite-backend.onrender.com';
 
     const currentConvo = conversations[currentConversationId];
     currentConvo.history.push({ role: "user", parts: [{ text: prompt }] });
@@ -282,3 +282,4 @@ document.addEventListener('DOMContentLoaded', () => {
     applySavedTheme();
     loadConversations();
 });
+
