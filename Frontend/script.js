@@ -180,7 +180,7 @@ function removeTypingIndicator() {
 
 // --- API & CHAT HANDLING ---
 async function generateResponse(prompt) {
-    const apiUrl = 'https://kryptonite-backend.onrender.com';
+    const apiUrl = 'https://kryptonite-backend.onrender.com/api/chat'; // Your live backend URL
 
     const currentConvo = conversations[currentConversationId];
     currentConvo.history.push({ role: "user", parts: [{ text: prompt }] });
@@ -201,16 +201,12 @@ async function generateResponse(prompt) {
     try {
         const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 
-        // ** THE FIX IS HERE **
-        // First, check if the response was successful.
         if (!response.ok) {
-            // If not, try to get the error message from the body, or just use the status text.
-            const errorText = await response.text(); // Get the raw error text (which might be HTML)
+            const errorText = await response.text();
             console.error("Backend Error Response:", errorText);
             throw new Error(`The server responded with status: ${response.status} ${response.statusText}`);
         }
         
-        // Only if the response was ok, try to parse it as JSON.
         const result = await response.json();
         
         if (result.candidates && result.candidates[0]?.content?.parts[0]) {
