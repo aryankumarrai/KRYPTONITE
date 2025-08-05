@@ -180,7 +180,6 @@ function removeTypingIndicator() {
 
 // --- API & CHAT HANDLING ---
 async function generateResponse(prompt) {
-    // ** IMPORTANT: Replace this with your public Hugging Face Space URL **
     const apiUrl = 'https://kryptonite-backend.onrender.com';
 
     const currentConvo = conversations[currentConversationId];
@@ -201,11 +200,18 @@ async function generateResponse(prompt) {
 
     try {
         const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        const result = await response.json();
 
+        // ** THE FIX IS HERE **
+        // First, check if the response was successful.
         if (!response.ok) {
-            throw new Error(result.error?.message || 'The server returned an error.');
+            // If not, try to get the error message from the body, or just use the status text.
+            const errorText = await response.text(); // Get the raw error text (which might be HTML)
+            console.error("Backend Error Response:", errorText);
+            throw new Error(`The server responded with status: ${response.status} ${response.statusText}`);
         }
+        
+        // Only if the response was ok, try to parse it as JSON.
+        const result = await response.json();
         
         if (result.candidates && result.candidates[0]?.content?.parts[0]) {
             const botResponse = result.candidates[0].content.parts[0].text;
@@ -282,4 +288,3 @@ document.addEventListener('DOMContentLoaded', () => {
     applySavedTheme();
     loadConversations();
 });
-
