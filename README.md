@@ -5,7 +5,7 @@ Welcome to Kryptonite, a fully-featured, voice-enabled, full-stack AI chatbot wi
 **Live Frontend (Vercel):** [https://kryptonite-bot.vercel.app/](https://kryptonite-bot.vercel.app/)
 **Live Backend (Render):** [https://kryptonite-backend.onrender.com/](https://kryptonite-backend.onrender.com/)
 
-![Kryptonite Chatbot Demo](https://placehold.co/800x400/1D1C2D/A78BFA?text=Kryptonite+UI)
+![Kryptonite Chatbot Demo](https://placehold.co/800x400/1D1C2D/A78BFA?text=Kryptonite)
 
 ---
 
